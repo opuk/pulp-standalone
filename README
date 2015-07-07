@@ -1,1 +1,20 @@
 Spin up a standalone pulp instance
+
+Pre-reqs
+--------
+
+* Make sure your your distros base channel is enabled (rhel-7-server-rpms on RHEL7, base on CentOS7)
+* Make sure the hostname is resolveable
+* Internet access
+
+Installation
+------------
+
+# git clone https://github.com/opuk/pulp-standalone.git
+# cd pulp-standalone
+# ./runme.sh
+
+Troubleshooting
+---------------
+
+1. Poke hole in the firewall as needed.
