@@ -17,8 +17,8 @@ exec { "Enable copr python-blinker":
 package { "mongodb-server": ensure => present, require => Exec["Enable EPEL"] } 
 
 service { "mongod":
-  running => true,
-  enabled => true,
+  ensure  => running,
+  enable => true,
   require => Package["mongodb-server"],
 }
 
@@ -26,8 +26,8 @@ package { "qpid-cpp-server": ensure => present, require => [ Exec["Enable EPEL"]
 package { "qpid-cpp-server-store": ensure => present, require => [ Exec["Enable EPEL"], Exec["Fetch pulp repo file"] ]} 
 
 service { "qpidd":
-  running => true,
-  enabled => true,
+  ensure  => running,
+  enable => true,
   require => [ Package["qpid-cpp-server-store"], Package["qpid-cpp-server"] ]
 }
 
@@ -37,26 +37,26 @@ package { "qpid-tools": ensure => present, require =>  [ Exec["Enable EPEL"], Ex
 package { "pulp-admin": ensure => present, require =>  [ Exec["Enable EPEL"], Exec["Fetch pulp repo file" ] ] } 
 
 exec { "pulp-manage-db":
-  commmand => "pulp-manage-db && touch /var/lib/pulp/.puppetinit",
+  command => "pulp-manage-db && touch /var/lib/pulp/.puppetinit",
   user     => apache,
   creates  => "/var/lib/pulp/.puppetinit",
   require  => [ Package["pulp-admin"], Package["qpid-tools"], Package["@pulp-server-qpid"] ],
 }
 
 service { "pulp_workers":
-  running => true,
-  enabled => true,
+  ensure  => running,
+  enable => true,
   require => Exec["pulp-manage-db"]
 }
 
 service { "pulp_celerybeat":
-  running => true,
-  enabled => true,
+  ensure  => running,
+  enable => true,
   require => Exec["pulp-manage-db"]
 }
 
 service { "pulp_resource_manager":
-  running => true,
-  enabled => true,
+  ensure  => running,
+  enable => true,
   require => Exec["pulp-manage-db"]
 }
