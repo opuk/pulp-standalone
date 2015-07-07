@@ -34,13 +34,13 @@ service { "qpidd":
 package { "@pulp-server-qpid": ensure => present, require =>  [ Exec["Enable EPEL"], 
                                       Exec["Fetch pulp repo file" ], Service["qpidd"]] } 
 package { "qpid-tools": ensure => present, require =>  [ Exec["Enable EPEL"], Exec["Fetch pulp repo file" ] ] } 
-package { "pulp-admin": ensure => present, require =>  [ Exec["Enable EPEL"], Exec["Fetch pulp repo file" ] ] } 
+package { "@pulp-admin": ensure => present, require =>  [ Exec["Enable EPEL"], Exec["Fetch pulp repo file" ] ] } 
 
 exec { "pulp-manage-db":
   command => "/usr/bin/pulp-manage-db && /usr/bin/touch /var/lib/pulp/.puppetinit",
   user     => apache,
   creates  => "/var/lib/pulp/.puppetinit",
-  require  => [ Package["pulp-admin"], Package["qpid-tools"], Package["@pulp-server-qpid"] ],
+  require  => [ Package["@pulp-admin"], Package["qpid-tools"], Package["@pulp-server-qpid"] ],
 }
 
 service { "pulp_workers":
