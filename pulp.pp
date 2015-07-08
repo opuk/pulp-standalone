@@ -61,12 +61,9 @@ service { "pulp_resource_manager":
   enable => true,
   require => Exec["pulp-manage-db"]
 }
-<<<<<<< HEAD
 
 service { 'httpd':
   ensure => running,
   enable => true,
   require => Yumgroup["pulp-server-qpid"],
 }
-=======
->>>>>>> parent of 82fd885... fix deps
