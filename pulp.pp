@@ -44,12 +44,6 @@ exec { "pulp-manage-db":
   require  => [ Yumgroup["pulp-admin"], Package["qpid-tools"], Yumgroup["pulp-server-qpid"] ],
 }
 
-service { "pulp_workers":
-  ensure  => running,
-  enable => true,
-  require => Exec["pulp-manage-db"]
-}
-
 service { "pulp_celerybeat":
   ensure  => running,
   enable => true,
@@ -59,5 +53,12 @@ service { "pulp_celerybeat":
 service { "pulp_resource_manager":
   ensure  => running,
   enable => true,
-  require => Exec["pulp-manage-db"]
+  require => [ Service["pulp_celerybeat"], Exec["pulp-manage-db"] ]
 }
+
+service { "pulp_workers":
+  ensure  => running,
+  enable => true,
+  require => [ Service["pulp_celerybeat"], Service["pulp_resource_manager"], Exec["pulp-manage-db"] ]
+}
+
