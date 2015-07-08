@@ -62,3 +62,8 @@ service { "pulp_workers":
   require => [ Service["pulp_celerybeat"], Service["pulp_resource_manager"], Exec["pulp-manage-db"] ]
 }
 
+service { 'httpd':
+  ensure => running,
+  enable => true,
+  require => Yumgroup["pulp-server-qpid"],
+}
