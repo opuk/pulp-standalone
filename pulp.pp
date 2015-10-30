@@ -9,10 +9,10 @@ exec { 'Enable EPEL':
 }
 
 #python-blinker is retired in epel7
-exec { 'Enable copr python-blinker':
-  command => '/usr/bin/curl http://copr.fedoraproject.org/coprs/opuk/python-blinker/repo/epel-7/opuk-python-blinker-epel-7.repo > /etc/yum.repos.d/opuk-python-blinker-epel-7.repo',
-  creates => '/etc/yum.repos.d/opuk-python-blinker-epel-7.repo'
-}
+#exec { 'Enable copr python-blinker':
+#  command => '/usr/bin/curl http://copr.fedoraproject.org/coprs/opuk/python-blinker/repo/epel-7/opuk-python-blinker-epel-7.repo > /etc/yum.repos.d/opuk-python-blinker-epel-7.repo',
+#  creates => '/etc/yum.repos.d/opuk-python-blinker-epel-7.repo'
+#}
 
 package { 'mongodb-server': ensure => present, require => Exec['Enable EPEL'] }
 
@@ -56,7 +56,7 @@ exec { 'pulp-manage-db':
   command => '/usr/bin/pulp-manage-db && /usr/bin/touch /var/lib/pulp/.puppetinit',
   user    => apache,
   creates => '/var/lib/pulp/.puppetinit',
-  require => [ Yumgroup['pulp-admin'], Package['qpid-tools'], Yumgroup['pulp-server-qpid'] ],
+  require => [ Yumgroup['pulp-admin'], Package['qpid-tools'], Yumgroup['pulp-server-qpid'], Service['qpidd'] ],
 }
 
 service { 'pulp_workers':
