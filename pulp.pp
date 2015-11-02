@@ -40,6 +40,7 @@ package { 'qpid-cpp-server-linearstore':
 service { 'qpidd':
   ensure  => running,
   enable  => true,
+  before => Package['qpid-tools'],
   require => [ Package['qpid-cpp-server-linearstore'], Package['qpid-cpp-server'] ]
 }
 
@@ -55,6 +56,7 @@ package { 'qpid-tools':
 
 yumgroup { 'pulp-admin':
   ensure  => present,
+  before => Package['qpid-tools'],
   require =>  [ Exec['Enable EPEL'], Exec['Fetch pulp repo file'] ]
 }
 
