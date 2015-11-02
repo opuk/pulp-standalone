@@ -9,10 +9,10 @@ exec { 'Enable EPEL':
 }
 
 #python-blinker is retired in epel7
-exec { 'Enable copr python-blinker':
-  command => '/usr/bin/curl http://copr.fedoraproject.org/coprs/opuk/python-blinker/repo/epel-7/opuk-python-blinker-epel-7.repo > /etc/yum.repos.d/opuk-python-blinker-epel-7.repo',
-  creates => '/etc/yum.repos.d/opuk-python-blinker-epel-7.repo'
-}
+#exec { 'Enable copr python-blinker':
+#  command => '/usr/bin/curl http://copr.fedoraproject.org/coprs/opuk/python-blinker/repo/epel-7/opuk-python-blinker-epel-7.repo > /etc/yum.repos.d/opuk-python-blinker-epel-7.repo',
+#  creates => '/etc/yum.repos.d/opuk-python-blinker-epel-7.repo'
+#}
 
 package { 'mongodb-server': ensure => present, require => Exec['Enable EPEL'] }
 
@@ -22,9 +22,15 @@ service { 'mongod':
   require => Package['mongodb-server'],
 }
 
-package { 'qpid-cpp-server':
+
+package { 'qpid-cpp-client':
   ensure  => present,
   require => [ Exec['Enable EPEL'], Exec['Fetch pulp repo file'] ]
+}
+
+package { 'qpid-cpp-server':
+  ensure  => present,
+  require => [ Exec['Enable EPEL'], Exec['Fetch pulp repo file'], Package['qpid-cpp-client'] ]
 }
 package { 'qpid-cpp-server-linearstore':
   ensure  => present,
@@ -34,6 +40,7 @@ package { 'qpid-cpp-server-linearstore':
 service { 'qpidd':
   ensure  => running,
   enable  => true,
+  before => Package['qpid-tools'],
   require => [ Package['qpid-cpp-server-linearstore'], Package['qpid-cpp-server'] ]
 }
 
@@ -49,6 +56,7 @@ package { 'qpid-tools':
 
 yumgroup { 'pulp-admin':
   ensure  => present,
+  before => Package['qpid-tools'],
   require =>  [ Exec['Enable EPEL'], Exec['Fetch pulp repo file'] ]
 }
 
@@ -56,7 +64,7 @@ exec { 'pulp-manage-db':
   command => '/usr/bin/pulp-manage-db && /usr/bin/touch /var/lib/pulp/.puppetinit',
   user    => apache,
   creates => '/var/lib/pulp/.puppetinit',
-  require => [ Yumgroup['pulp-admin'], Package['qpid-tools'], Yumgroup['pulp-server-qpid'] ],
+  require => [ Yumgroup['pulp-admin'], Package['qpid-tools'], Yumgroup['pulp-server-qpid'], Service['qpidd'] ],
 }
 
 service { 'pulp_workers':
