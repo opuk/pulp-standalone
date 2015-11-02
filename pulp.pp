@@ -22,9 +22,15 @@ service { 'mongod':
   require => Package['mongodb-server'],
 }
 
-package { 'qpid-cpp-server':
+
+package { 'qpid-cpp-client':
   ensure  => present,
   require => [ Exec['Enable EPEL'], Exec['Fetch pulp repo file'] ]
+}
+
+package { 'qpid-cpp-server':
+  ensure  => present,
+  require => [ Exec['Enable EPEL'], Exec['Fetch pulp repo file'], Package['qpid-cpp-client'] ]
 }
 package { 'qpid-cpp-server-linearstore':
   ensure  => present,
