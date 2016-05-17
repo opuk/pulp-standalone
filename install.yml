@@ -1,6 +1,7 @@
 ---
 - name: deploy pulp
-  hosts: pulp-syncer.example.com
+  hosts: localhost
+  connection: local
   become: yes
 
   tasks:
