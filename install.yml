@@ -1,0 +1,65 @@
+---
+- name: deploy pulp
+  hosts: pulp-syncer.example.com
+  become: yes
+
+  tasks:
+    - name: update all package
+      package:
+        name: "*"
+        state: latest
+
+    - name: install pulp repo file
+      command: /usr/bin/curl -O /etc/yum.repos.d/rhel-pulp.repo https://repos.fedorapeople.org/repos/pulp/pulp/rhel-pulp.repo
+      args:
+        creates: /etc/yum.repos.d/rhel-pulp.repo
+
+    - name: install packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - epel-release
+        - mongodb-server
+        - qpid-cpp-client
+        - qpid-cpp-server
+        - qpid-cpp-server-linearstore
+        - qpid-tools
+        - "@pulp-server-qpid"
+        - "@pulp-admin"
+
+    - name: start and enable mongodb and qpidd
+      service:
+        name: "{{ item }}"
+        state: running
+        enabled: yes
+      with_items:
+        - mongod
+        - qpidd
+
+    - name: init pulp db
+      command: pulp-manage-db
+      become_user: apache
+
+    - name: start and enable pulp services
+      service:
+        name: "{{ item }}"
+        state: running
+        enabled: yes
+      with_items:
+        - pulp_workers
+        - pulp_celerybeat
+        - pulp_resource_manager
+        - httpd
+
+
+#- name: migrate database
+#  gather_facts: no
+#  user: apache
+#  become: yes
+#  tasks:
+#    - name: migrate database
+#      command: /usr/bin/pulp-manage-db
+#      user: apache
+
+
