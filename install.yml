@@ -11,9 +11,9 @@
         state: latest
 
     - name: install pulp repo file
-      command: /usr/bin/curl -O /etc/yum.repos.d/rhel-pulp.repo https://repos.fedorapeople.org/repos/pulp/pulp/rhel-pulp.repo
-      args:
-        creates: /etc/yum.repos.d/rhel-pulp.repo
+      get_url:
+        url: https://repos.fedorapeople.org/repos/pulp/pulp/rhel-pulp.repo
+        dest: /etc/yum.repos.d/rhel-pulp.repo
 
     - name: install packages
       yum:
