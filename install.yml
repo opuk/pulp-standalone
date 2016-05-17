@@ -53,14 +53,3 @@
         - pulp_resource_manager
         - httpd
 
-
-#- name: migrate database
-#  gather_facts: no
-#  user: apache
-#  become: yes
-#  tasks:
-#    - name: migrate database
-#      command: /usr/bin/pulp-manage-db
-#      user: apache
-
-
