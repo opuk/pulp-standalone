@@ -28,11 +28,17 @@
         - qpid-tools
         - "@pulp-server-qpid"
         - "@pulp-admin"
+        - pulp-server
+        - python-gofer-qpid
+        - python-qpid
+        - qpid-tools
+        - pulp-puppet-plugins
+        - pulp-docker-plugins
 
     - name: start and enable mongodb and qpidd
       service:
         name: "{{ item }}"
-        state: running
+        state: started
         enabled: yes
       with_items:
         - mongod
@@ -45,7 +51,7 @@
     - name: start and enable pulp services
       service:
         name: "{{ item }}"
-        state: running
+        state: started
         enabled: yes
       with_items:
         - pulp_workers
