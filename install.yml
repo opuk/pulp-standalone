@@ -32,6 +32,7 @@
         - python-gofer-qpid
         - python-qpid
         - qpid-tools
+        - pulp-rpm-plugins
         - pulp-puppet-plugins
         - pulp-docker-plugins
 
