@@ -49,8 +49,11 @@
       command: pulp-manage-db
       become_user: apache
 
-    - name: generate pulp certificates
-      command: pulp-gen-key-pair && pulp-gen-ca-certificate
+    - name: generate pulp certificate
+      command: pulp-gen-key-pair
+
+    - name: generate pulp CA certificate
+      command: pulp-gen-ca-certificate
 
     - name: start and enable pulp services
       service:
